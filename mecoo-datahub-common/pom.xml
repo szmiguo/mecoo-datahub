@@ -87,9 +87,16 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
+        </dependency>
+
+        <!-- Playwright -->
+        <dependency>
+            <groupId>com.microsoft.playwright</groupId>
+            <artifactId>playwright</artifactId>
         </dependency>
 
         <!-- io常用工具类 -->

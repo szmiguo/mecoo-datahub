@@ -52,7 +52,7 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://gz-cynosdbmysql-grp-9zdg2bxx.sql.tencentcdb.com:20334/mecoo-admin?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        url: jdbc:mysql://gz-cynosdbmysql-grp-9zdg2bxx.sql.tencentcdb.com:20334/mecoo-datahub?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: mecoo_admin
         password: A8*Q1GATnNRp@}c72.8k
       # 从库数据源
