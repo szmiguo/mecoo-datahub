@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mecoo.operation.mapper.KolSmVideoMapper">
+
+    <resultMap type="KolSmVideo" id="KolSmVideoResult">
+        <result property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="postSm" column="post_sm"/>
+        <result property="kolId" column="kol_id"/>
+        <result property="postUser" column="post_user"/>
+        <result property="postDate" column="post_date"/>
+        <result property="postShortcode" column="post_shortcode"/>
+        <result property="description" column="description"/>
+        <result property="videoPlayCount" column="video_play_count"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="contentId" column="content_id"/>
+        <result property="productType" column="product_type"/>
+        <result property="length" column="length"/>
+        <result property="isPaidPartnership" column="is_paid_partnership"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectKolSmVideoVo">
+        select id,
+               post_id,
+               post_sm,
+               kol_id,
+               post_user,
+               post_date,
+               post_shortcode,
+               description,
+               video_play_count,
+               views,
+               likes,
+               content_id,
+               product_type,
+               length,
+               is_paid_partnership,
+               create_time,
+               update_time
+        from kol_sm_video
+    </sql>
+
+    <select id="selectKolSmVideoList" parameterType="KolSmVideo" resultMap="KolSmVideoResult">
+        <include refid="selectKolSmVideoVo"/>
+        <where>
+            <if test="postId != null  and postId != ''">and post_id = #{postId}</if>
+            <if test="postSm != null  and postSm != ''">and post_sm = #{postSm}</if>
+            <if test="kolId != null  and kolId != ''">and kol_id = #{kolId}</if>
+            <if test="postUser != null  and postUser != ''">and post_user = #{postUser}</if>
+            <if test="postDate != null ">and post_date = #{postDate}</if>
+            <if test="postShortcode != null  and postShortcode != ''">and post_shortcode = #{postShortcode}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="videoPlayCount != null ">and video_play_count = #{videoPlayCount}</if>
+            <if test="views != null ">and views = #{views}</if>
+            <if test="likes != null ">and likes = #{likes}</if>
+            <if test="contentId != null  and contentId != ''">and content_id = #{contentId}</if>
+            <if test="productType != null  and productType != ''">and product_type = #{productType}</if>
+            <if test="length != null ">and length = #{length}</if>
+            <if test="isPaidPartnership != null  and isPaidPartnership != ''">and is_paid_partnership =
+                #{isPaidPartnership}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectKolSmVideoById" parameterType="String" resultMap="KolSmVideoResult">
+        <include refid="selectKolSmVideoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertKolSmVideo" parameterType="KolSmVideo" useGeneratedKeys="true" keyProperty="id">
+        insert into kol_sm_video
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postId != null">post_id,</if>
+            <if test="postSm != null">post_sm,</if>
+            <if test="kolId != null">kol_id,</if>
+            <if test="postUser != null">post_user,</if>
+            <if test="postDate != null">post_date,</if>
+            <if test="postShortcode != null">post_shortcode,</if>
+            <if test="description != null">description,</if>
+            <if test="videoPlayCount != null">video_play_count,</if>
+            <if test="views != null">views,</if>
+            <if test="likes != null">likes,</if>
+            <if test="contentId != null">content_id,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="length != null">length,</if>
+            <if test="isPaidPartnership != null">is_paid_partnership,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">#{postId},</if>
+            <if test="postSm != null">#{postSm},</if>
+            <if test="kolId != null">#{kolId},</if>
+            <if test="postUser != null">#{postUser},</if>
+            <if test="postDate != null">#{postDate},</if>
+            <if test="postShortcode != null">#{postShortcode},</if>
+            <if test="description != null">#{description},</if>
+            <if test="videoPlayCount != null">#{videoPlayCount},</if>
+            <if test="views != null">#{views},</if>
+            <if test="likes != null">#{likes},</if>
+            <if test="contentId != null">#{contentId},</if>
+            <if test="productType != null">#{productType},</if>
+            <if test="length != null">#{length},</if>
+            <if test="isPaidPartnership != null">#{isPaidPartnership},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateKolSmVideo" parameterType="KolSmVideo">
+        update kol_sm_video
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="postSm != null">post_sm = #{postSm},</if>
+            <if test="kolId != null">kol_id = #{kolId},</if>
+            <if test="postUser != null">post_user = #{postUser},</if>
+            <if test="postDate != null">post_date = #{postDate},</if>
+            <if test="postShortcode != null">post_shortcode = #{postShortcode},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="videoPlayCount != null">video_play_count = #{videoPlayCount},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="likes != null">likes = #{likes},</if>
+            <if test="contentId != null">content_id = #{contentId},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="length != null">length = #{length},</if>
+            <if test="isPaidPartnership != null">is_paid_partnership = #{isPaidPartnership},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKolSmVideoById" parameterType="String">
+        DELETE
+        FROM kol_sm_video
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteKolSmVideoByIds" parameterType="String">
+        delete from kol_sm_video where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

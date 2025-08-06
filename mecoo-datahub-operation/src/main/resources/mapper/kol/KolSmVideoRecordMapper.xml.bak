@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mecoo.operation.mapper.KolSmVideoRecordMapper">
+
+    <resultMap type="KolSmVideoRecord" id="KolSmVideoRecordResult">
+        <result property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="kolId" column="kol_id"/>
+        <result property="videoPlayCount" column="video_play_count"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectKolSmVideoRecordVo">
+        select id, post_id, kol_id, video_play_count, views, likes, create_time
+        from kol_sm_video_record
+    </sql>
+
+    <select id="selectKolSmVideoRecordList" parameterType="KolSmVideoRecord" resultMap="KolSmVideoRecordResult">
+        <include refid="selectKolSmVideoRecordVo"/>
+        <where>
+            <if test="postId != null  and postId != ''">and post_id = #{postId}</if>
+            <if test="kolId != null  and kolId != ''">and kol_id = #{kolId}</if>
+            <if test="videoPlayCount != null ">and video_play_count = #{videoPlayCount}</if>
+            <if test="views != null ">and views = #{views}</if>
+            <if test="likes != null ">and likes = #{likes}</if>
+        </where>
+    </select>
+
+    <select id="selectKolSmVideoRecordById" parameterType="String" resultMap="KolSmVideoRecordResult">
+        <include refid="selectKolSmVideoRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertKolSmVideoRecord" parameterType="KolSmVideoRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into kol_sm_video_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postId != null">post_id,</if>
+            <if test="kolId != null">kol_id,</if>
+            <if test="videoPlayCount != null">video_play_count,</if>
+            <if test="views != null">views,</if>
+            <if test="likes != null">likes,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postId != null">#{postId},</if>
+            <if test="kolId != null">#{kolId},</if>
+            <if test="videoPlayCount != null">#{videoPlayCount},</if>
+            <if test="views != null">#{views},</if>
+            <if test="likes != null">#{likes},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateKolSmVideoRecord" parameterType="KolSmVideoRecord">
+        update kol_sm_video_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="kolId != null">kol_id = #{kolId},</if>
+            <if test="videoPlayCount != null">video_play_count = #{videoPlayCount},</if>
+            <if test="views != null">views = #{views},</if>
+            <if test="likes != null">likes = #{likes},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKolSmVideoRecordById" parameterType="String">
+        delete
+        from kol_sm_video_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteKolSmVideoRecordByIds" parameterType="String">
+        delete from kol_sm_video_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
