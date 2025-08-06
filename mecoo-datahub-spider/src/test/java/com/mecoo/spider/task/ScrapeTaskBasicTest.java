@@ -148,7 +148,7 @@ class ScrapeTaskBasicTest {
         postData.setLikeCount(100);
         postData.setCommentCount(10);
         postData.setPostId("test_post_1");
-        postData.setMediaType(1);
+        postData.setMediaType("photo");
         postData.setPostUserId("test_user_1");
         postData.setPostUserName("Test User 1");
         postData.setCreateTime(LocalDateTime.now());
@@ -171,7 +171,7 @@ class ScrapeTaskBasicTest {
             postData.setLikeCount(100 * i);
             postData.setCommentCount(10 * i);
             postData.setPostId("test_post_" + i);
-            postData.setMediaType(i % 2 + 1);
+            postData.setMediaType(i % 2 == 1 ? "photo" : "reel");
             postData.setPostUserId("test_user_" + i);
             postData.setPostUserName("Test User " + i);
             postData.setCreateTime(LocalDateTime.now());

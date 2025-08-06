@@ -7,6 +7,7 @@ import com.mecoo.spider.config.ScrapingConfiguration;
 import com.mecoo.spider.domain.InstagramGraphQLResponse;
 import com.mecoo.spider.domain.PostData;
 import com.mecoo.spider.enums.SocialMediaPlatform;
+import com.mecoo.spider.util.MediaTypeUtil;
 import com.mecoo.spider.util.PlaywrightStealth;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -60,17 +61,17 @@ public class InstagramReelScraper {
                     try {
                         String responseBody = response.text();
                         if (isReelsDataResponse(responseBody)) {
-                            log.info("【新方法】拦截到Reels数据响应，长度: {}", responseBody.length());
+                            log.info("拦截到Reels数据响应，长度: {}", responseBody.length());
                             interceptedResponses.add(responseBody);
                         }
                     } catch (Exception e) {
-                        log.warn("【新方法】读取响应失败: {}", e.getMessage());
+                        log.warn("读取响应失败: {}", e.getMessage());
                     }
                 }
             });
 
             String reelsUrl = "https://www.instagram.com/" + username + "/reels/";
-            log.info("【新方法】导航到用户Reels页面: {}", reelsUrl);
+            log.info("导航到用户Reels页面: {}", reelsUrl);
             page.navigate(reelsUrl);
 
             // 处理页面重定向（登录检测等）
@@ -84,10 +85,10 @@ public class InstagramReelScraper {
                 page.waitForLoadState(LoadState.DOMCONTENTLOADED);
                 page.waitForTimeout(ScrapingConfiguration.PAGE_LOAD_TIMEOUT);
             } catch (Exception e) {
-                log.warn("【新方法】页面加载等待异常: {}", e.getMessage());
+                log.warn("页面加载等待异常: {}", e.getMessage());
             }
 
-            log.info("【新方法】开始收集Reels数据，目标: {} 条", maxCollectedCount);
+            log.info("开始收集Reels数据，目标: {} 条", maxCollectedCount);
 
             // 滚动触发更多网络请求
             int maxScrolls = ScrapingConfiguration.DEFAULT_MAX_SCROLL_ATTEMPTS;
@@ -96,7 +97,7 @@ public class InstagramReelScraper {
 
             while (reelsData.size() < maxCollectedCount && scrollCount < maxScrolls) {
                 scrollCount++;
-                log.info("【新方法】第 {} 次滚动，已收集: {} 条", scrollCount, reelsData.size());
+                log.info("第 {} 次滚动，已收集: {} 条", scrollCount, reelsData.size());
 
                 // 处理已拦截的响应
                 for (String responseBody : interceptedResponses) {
@@ -114,47 +115,53 @@ public class InstagramReelScraper {
                     // 模拟人类浏览行为：观看内容的随机停顿
                     int viewingDelay = ScrapingConfiguration.VIEWING_DELAY_MIN +
                             ThreadLocalRandom.current().nextInt(ScrapingConfiguration.VIEWING_DELAY_RANGE);
-                    log.debug("【新方法】模拟观看内容，等待 {} 毫秒...", viewingDelay);
+                    log.debug("模拟观看内容，等待 {} 毫秒...", viewingDelay);
                     page.waitForTimeout(viewingDelay);
 
                     // 偶尔模拟用户暂停浏览
                     if (ThreadLocalRandom.current().nextInt(100) < ScrapingConfiguration.PAUSE_PROBABILITY) {
                         int pauseTime = ScrapingConfiguration.PAUSE_TIME_MIN +
                                 ThreadLocalRandom.current().nextInt(ScrapingConfiguration.PAUSE_TIME_RANGE);
-                        log.debug("【新方法】模拟用户暂停浏览，等待 {} 毫秒...", pauseTime);
+                        log.debug("模拟用户暂停浏览，等待 {} 毫秒...", pauseTime);
                         page.waitForTimeout(pauseTime);
                     }
 
                     // 随机选择滚动前的准备行为
                     if (ThreadLocalRandom.current().nextInt(100) < ScrapingConfiguration.MOUSE_MOVE_PROBABILITY) {
-                        log.debug("【新方法】模拟真实用户鼠标移动...");
+                        log.debug("模拟真实用户鼠标移动...");
                         try {
                             // 使用更真实的鼠标移动模拟
                             PlaywrightStealth.simulateHumanMouseMovement(page);
                         } catch (Exception e) {
-                            log.warn("【新方法】鼠标移动失败: {}", e.getMessage());
+                            log.warn("鼠标移动失败: {}", e.getMessage());
                         }
                     }
 
                     // 执行人性化滚动
-                    log.debug("【新方法】开始执行人性化滚动...");
+                    log.debug("开始执行人性化滚动...");
                     performHumanLikeScroll(page);
 
                     // 滚动后观察新内容的等待时间
                     int observeDelay = ScrapingConfiguration.OBSERVE_DELAY_MIN +
                             ThreadLocalRandom.current().nextInt(ScrapingConfiguration.OBSERVE_DELAY_RANGE);
-                    log.debug("【新方法】滚动后观察新内容，等待 {} 毫秒...", observeDelay);
+                    log.debug("滚动后观察新内容，等待 {} 毫秒...", observeDelay);
                     page.waitForTimeout(observeDelay);
 
                     // 等待网络请求完成，使用更智能的等待策略
                     try {
                         page.waitForLoadState(LoadState.NETWORKIDLE, new Page.WaitForLoadStateOptions().setTimeout(ScrapingConfiguration.NETWORK_IDLE_TIMEOUT));
-                        log.debug("【新方法】网络请求已稳定");
+                        log.debug("网络请求已稳定");
                     } catch (Exception e) {
                         // 如果网络空闲等待超时，则继续等待一段时间
-                        log.debug("【新方法】网络空闲等待超时，继续等待...");
+                        log.debug("网络空闲等待超时，继续等待...");
                         page.waitForTimeout(1000);
                     }
+                }
+
+                // 优化：如果前3次滚动都没有收集到任何数据，提前退出
+                if (scrollCount >= 3 && reelsData.size() == initialDataCount) {
+                    log.warn("【优化退出】前 {} 次滚动未收集到任何数据，可能用户不存在或无公开Reels，提前退出", scrollCount);
+                    break;
                 }
             }
 
@@ -170,10 +177,10 @@ public class InstagramReelScraper {
             }
 
             page.close();
-            log.info("【新方法】数据收集完成，共收集到 {} 条Reels数据", reelsData.size());
+            log.info("数据收集完成，共收集到 {} 条Reels数据", reelsData.size());
 
         } catch (Exception e) {
-            System.err.println("【新方法】获取用户Reels数据失败: " + e.getMessage());
+            log.error("获取用户Reels数据失败: {}", e.getMessage(), e);
         }
 
         return reelsData;
@@ -353,46 +360,36 @@ public class InstagramReelScraper {
         return reels;
     }
 
-    public static List<PostData> startScrapeReel(List<String> InstagramUserNames, Integer maxCollectedCount) {
+
+    public static List<PostData> startScrapeReel(String userName, Integer maxCollectedCount) {
 
         if (browserContext == null) {
             initBrowser();
         }
 
-        List<PostData> dataList = new ArrayList<>();
         log.info("=== Instagram 用户 Reels 数据批量提取工具启动 ===");
 
-        if (CollUtil.isEmpty(InstagramUserNames)) {
-            log.warn("=== 待抓取的 Instagram 用户列表为空");
-            return dataList;
-        }
-
         int collectedCount = maxCollectedCount == null ? ScrapingConfiguration.getMaxCollectionCount() : maxCollectedCount;
-        log.info("收集信息条数: {}", collectedCount);
+        log.info("本次收集信息条数: {}", collectedCount);
 
+        log.info("开始使用网络请求拦截策略获取用户 @{} 的最新{}条Reels数据...", userName, collectedCount);
+        List<PostData> reelsData = getUserReelsData(userName, collectedCount);
 
-        for (String username : InstagramUserNames) {
+        log.info("=== 数据提取结果 ===");
+        if (CollUtil.isEmpty(reelsData)) {
+            log.warn("未能获取到用户 {} 任何Reels数据", userName);
+        } else {
+            log.info("成功获取到用户 {} , {} 条Reels数据", userName, reelsData.size());
 
-            log.info("开始使用网络请求拦截策略获取用户 @{} 的最新{}条Reels数据...", username, collectedCount);
-            List<PostData> reelsData = getUserReelsData(username, collectedCount);
-
-            log.info("=== 数据提取结果 ===");
-            if (CollUtil.isEmpty(reelsData)) {
-                log.warn("未能获取到用户 {} 任何Reels数据", username);
-            } else {
-                log.info("成功获取到用户 {} , {} 条Reels数据", username, reelsData.size());
-
-                for (PostData reelData : reelsData) {
-                    reelData.setSocialMedia(SocialMediaPlatform.INSTAGRAM.val);
-                    reelData.setPostUserName(username);
-                    dataList.add(reelData);
-                }
+            for (PostData reelData : reelsData) {
+                reelData.setSocialMedia(SocialMediaPlatform.INSTAGRAM.val);
+                reelData.setPostUserName(userName);
 
             }
+
         }
         closeBrowser();
-        return dataList;
-
+        return reelsData;
     }
 
     /**
@@ -405,7 +402,7 @@ public class InstagramReelScraper {
                 media.getLikeCount() != null ? media.getLikeCount() : -1,
                 media.getCommentCount() != null ? media.getCommentCount() : -1,
                 media.getPk() != null ? media.getPk() : "",
-                media.getMediaType() != null ? media.getMediaType() : -1,
+                media.getMediaType() != null ? MediaTypeUtil.getMediaTypeDescription(media.getMediaType()) : "unknown",
                 (media.getUser() != null && media.getUser().getPk() != null) ? media.getUser().getPk() : ""
         );
     }

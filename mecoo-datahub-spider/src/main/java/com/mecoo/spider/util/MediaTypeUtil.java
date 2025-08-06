@@ -41,4 +41,34 @@ public class MediaTypeUtil {
     public static boolean isReel(int mediaType) {
         return mediaType == VIDEO; // Reels通常归类为视频类型
     }
+    
+    /**
+     * 根据媒体类型描述获取对应的整数值
+     */
+    public static int getMediaTypeFromDescription(String description) {
+        if (description == null) {
+            return 0;
+        }
+        switch (description.toLowerCase()) {
+            case "photo":
+                return PHOTO;
+            case "reel":
+                return VIDEO;
+            case "carousel":
+                return CAROUSEL;
+            case "igtv":
+                return IGTV;
+            default:
+                // 尝试解析 "unknown(数字)" 格式
+                if (description.startsWith("unknown(") && description.endsWith(")")) {
+                    try {
+                        String numberPart = description.substring(8, description.length() - 1);
+                        return Integer.parseInt(numberPart);
+                    } catch (NumberFormatException e) {
+                        return 0;
+                    }
+                }
+                return 0;
+        }
+    }
 }

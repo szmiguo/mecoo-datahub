@@ -10,7 +10,7 @@
         <result column="like_count" property="likeCount" jdbcType="INTEGER"/>
         <result column="comment_count" property="commentCount" jdbcType="INTEGER"/>
         <result column="post_id" property="postId" jdbcType="VARCHAR"/>
-        <result column="media_type" property="mediaType" jdbcType="INTEGER"/>
+        <result column="media_type" property="mediaType" jdbcType="VARCHAR"/>
         <result column="post_user_id" property="postUserId" jdbcType="VARCHAR"/>
         <result column="post_user_name" property="postUserName" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
@@ -40,7 +40,7 @@
                 #{item.likeCount,jdbcType=INTEGER},
                 #{item.commentCount,jdbcType=INTEGER},
                 #{item.postId,jdbcType=VARCHAR},
-                #{item.mediaType,jdbcType=INTEGER},
+                #{item.mediaType,jdbcType=VARCHAR},
                 #{item.postUserId,jdbcType=VARCHAR},
                 #{item.postUserName,jdbcType=VARCHAR},
                 #{item.createTime,jdbcType=TIMESTAMP},

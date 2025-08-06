@@ -30,25 +30,34 @@ public class ScrapeTask {
     public void scrapeSocialMediaPost() {
         log.info("开始抓取社交媒体帖子数据");
 
-        List<String> names = Arrays.asList("fsdf","dindaalamanda_", "mecoo.id_official","alnaycakery");
-        int maxCollectedCount = 50;
+        List<String> instagramUserNames = Arrays.asList( "dindaalamanda_", "mecoo.id_official", "alnaycakery");
+        int maxCollectedCount = 10;
 
-        try {
-            List<PostData> postDataList = InstagramReelScraper.startScrapeReel(names,maxCollectedCount);
-
-            if (CollUtil.isNotEmpty(postDataList)) {
-                log.info("成功抓取到 {} 条帖子数据，开始保存到数据库", postDataList.size());
-
-                int savedCount = postDataService.batchInsert(postDataList);
-                log.info("成功保存 {} 条帖子数据到数据库", savedCount);
-            } else {
-                log.warn("未抓取到任何帖子数据");
-            }
-        } catch (Exception e) {
-            log.error("抓取或保存社交媒体帖子数据时发生错误", e);
+        if (CollUtil.isEmpty(instagramUserNames)) {
+            log.warn("=== 待抓取的 Instagram 用户列表为空");
+            return;
         }
+        int totalCollectedCount = 0;
+        for (String username : instagramUserNames) {
+            try {
+                List<PostData> postDataList = InstagramReelScraper.startScrapeReel(username, maxCollectedCount);
 
-        log.info("社交媒体帖子抓取任务完成");
+                if (CollUtil.isNotEmpty(postDataList)) {
+                    log.info("成功抓取到用户{} {} 条帖子数据，开始保存到数据库", username, postDataList.size());
+
+                    int savedCount = postDataService.batchInsert(postDataList);
+                    log.info("成功保存用户{} {} 条帖子数据到数据库", username, savedCount);
+
+                    totalCollectedCount += savedCount;
+                } else {
+                    log.warn("未抓取到用户{} 任何帖子数据", username);
+                }
+            } catch (Exception e) {
+                log.error("抓取或保存社交媒体帖子数据时发生错误", e);
+            }
+
+        }
+        log.info("社交媒体帖子抓取任务完成,本次总共抓取{}条", totalCollectedCount);
     }
 
 
