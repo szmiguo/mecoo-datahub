@@ -1,13 +1,16 @@
 package com.mecoo.spider.task;
 
 
+import cn.hutool.core.collection.CollUtil;
 import com.mecoo.spider.domain.PostData;
-import com.mecoo.spider.scrapers.InstagramScraper;
+import com.mecoo.spider.scrapers.InstagramReelScraper;
 import com.mecoo.spider.service.IPostDataService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,13 +29,16 @@ public class ScrapeTask {
      */
     public void scrapeSocialMediaPost() {
         log.info("开始抓取社交媒体帖子数据");
-        
+
+        List<String> names = Arrays.asList("fsdf","dindaalamanda_", "mecoo.id_official","alnaycakery");
+        int maxCollectedCount = 50;
+
         try {
-            List<PostData> postDataList = InstagramScraper.startScrape();
-            
-            if (postDataList != null && !postDataList.isEmpty()) {
+            List<PostData> postDataList = InstagramReelScraper.startScrapeReel(names,maxCollectedCount);
+
+            if (CollUtil.isNotEmpty(postDataList)) {
                 log.info("成功抓取到 {} 条帖子数据，开始保存到数据库", postDataList.size());
-                
+
                 int savedCount = postDataService.batchInsert(postDataList);
                 log.info("成功保存 {} 条帖子数据到数据库", savedCount);
             } else {
@@ -41,10 +47,9 @@ public class ScrapeTask {
         } catch (Exception e) {
             log.error("抓取或保存社交媒体帖子数据时发生错误", e);
         }
-        
+
         log.info("社交媒体帖子抓取任务完成");
     }
-
 
 
 }

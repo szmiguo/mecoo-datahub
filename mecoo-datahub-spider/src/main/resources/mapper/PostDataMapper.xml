@@ -12,6 +12,7 @@
         <result column="post_id" property="postId" jdbcType="VARCHAR"/>
         <result column="media_type" property="mediaType" jdbcType="INTEGER"/>
         <result column="post_user_id" property="postUserId" jdbcType="VARCHAR"/>
+        <result column="post_user_name" property="postUserName" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -27,6 +28,7 @@
             post_id,
             media_type,
             post_user_id,
+            post_user_name,
             create_time,
             update_time
         ) VALUES
@@ -40,6 +42,7 @@
                 #{item.postId,jdbcType=VARCHAR},
                 #{item.mediaType,jdbcType=INTEGER},
                 #{item.postUserId,jdbcType=VARCHAR},
+                #{item.postUserName,jdbcType=VARCHAR},
                 #{item.createTime,jdbcType=TIMESTAMP},
                 #{item.updateTime,jdbcType=TIMESTAMP}
             )

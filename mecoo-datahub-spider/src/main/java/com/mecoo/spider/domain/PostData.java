@@ -44,6 +44,9 @@ public class PostData {
     @TableField("post_user_id")
     private String postUserId;
 
+    @TableField("post_user_name")
+    private String postUserName;
+
     @TableField("created_time")
     private LocalDateTime createTime;
 
@@ -66,10 +69,22 @@ public class PostData {
         this.postUserId = postUserId;
     }
 
+    public PostData(String shortCode, int playCount, int likeCount, int commentCount, String postId, int mediaType, String postUserId, String postUserName) {
+        this();
+        this.shortCode = shortCode;
+        this.playCount = playCount;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.postId = postId;
+        this.mediaType = mediaType;
+        this.postUserId = postUserId;
+        this.postUserName = postUserName;
+    }
+
 
     @Override
     public String toString() {
-        return String.format("ID: %s | PostID: %s | UserID: %s | 类型: %s | 播放数: %d | 点赞数: %d | 评论数: %d",
-                shortCode, postId, postUserId, MediaTypeUtil.getMediaTypeDescription(mediaType), playCount, likeCount, commentCount);
+        return String.format("ID: %s | PostID: %s | UserID: %s | UserName: %s | 类型: %s | 播放数: %d | 点赞数: %d | 评论数: %d",
+                shortCode, postId, postUserId, postUserName, MediaTypeUtil.getMediaTypeDescription(mediaType), playCount, likeCount, commentCount);
     }
 }

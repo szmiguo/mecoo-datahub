@@ -150,6 +150,7 @@ class ScrapeTaskBasicTest {
         postData.setPostId("test_post_1");
         postData.setMediaType(1);
         postData.setPostUserId("test_user_1");
+        postData.setPostUserName("Test User 1");
         postData.setCreateTime(LocalDateTime.now());
         postData.setUpdateTime(LocalDateTime.now());
         return postData;
@@ -172,6 +173,7 @@ class ScrapeTaskBasicTest {
             postData.setPostId("test_post_" + i);
             postData.setMediaType(i % 2 + 1);
             postData.setPostUserId("test_user_" + i);
+            postData.setPostUserName("Test User " + i);
             postData.setCreateTime(LocalDateTime.now());
             postData.setUpdateTime(LocalDateTime.now());
             

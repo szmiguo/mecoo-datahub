@@ -1,10 +1,12 @@
 package com.mecoo.spider.scrapers;
 
+import cn.hutool.core.collection.CollUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mecoo.spider.config.ScrapingConfiguration;
 import com.mecoo.spider.domain.InstagramGraphQLResponse;
 import com.mecoo.spider.domain.PostData;
+import com.mecoo.spider.enums.SocialMediaPlatform;
 import com.mecoo.spider.util.PlaywrightStealth;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -18,7 +20,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
-public class InstagramScraper {
+public class InstagramReelScraper {
 
     private static BrowserContext browserContext;
     private static Playwright playwright;
@@ -567,6 +569,48 @@ public class InstagramScraper {
         return reels;
     }
 
+    public static List<PostData> startScrapeReel(List<String> InstagramUserNames, Integer maxCollectedCount) {
+
+        if (browserContext == null) {
+            initBrowser();
+        }
+
+        List<PostData> dataList = new ArrayList<>();
+        log.info("=== Instagram 用户 Reels 数据批量提取工具启动 ===");
+
+        if (CollUtil.isEmpty(InstagramUserNames)) {
+            log.warn("=== 待抓取的 Instagram 用户列表为空");
+            return dataList;
+        }
+
+        int collectedCount = maxCollectedCount == null ? ScrapingConfiguration.getMaxCollectionCount() : maxCollectedCount;
+        log.info("收集信息条数: {}", collectedCount);
+
+
+        for (String username : InstagramUserNames) {
+
+            log.info("开始使用网络请求拦截策略获取用户 @{} 的最新{}条Reels数据...", username, collectedCount);
+            List<PostData> reelsData = getUserReelsData(username, collectedCount);
+
+            log.info("=== 数据提取结果 ===");
+            if (CollUtil.isEmpty(reelsData)) {
+                log.warn("未能获取到用户 {} 任何Reels数据", username);
+            } else {
+                log.info("成功获取到用户 {} , {} 条Reels数据", username, reelsData.size());
+
+                for (PostData reelData : reelsData) {
+                    reelData.setSocialMedia(SocialMediaPlatform.INSTAGRAM.val);
+                    reelData.setPostUserName(username);
+                    dataList.add(reelData);
+                }
+
+            }
+        }
+        closeBrowser();
+        return dataList;
+
+    }
+
     /**
      * 从媒体数据创建ReelData对象
      */
@@ -621,38 +665,5 @@ public class InstagramScraper {
             playwright.close();
             playwright = null;
         }
-    }
-
-    public static List<PostData> startScrape() {
-
-        if (browserContext == null) {
-            initBrowser();
-        }
-
-
-        log.info("=== Instagram 用户 Reels 数据批量提取工具 ===");
-
-        String username = ScrapingConfiguration.getTargetUsername();
-        log.info("目标用户: @{}", username);
-
-        int maxCollectedCount = ScrapingConfiguration.getMaxCollectionCount();
-        log.info("收集信息条数: {}", maxCollectedCount);
-
-        log.info("开始使用网络请求拦截策略获取用户 @{} 的最新{}条Reels数据...", username, maxCollectedCount);
-        List<PostData> reelsData = getUserReelsData(username, maxCollectedCount);
-
-        log.info("=== 数据提取结果 ===");
-        if (reelsData.isEmpty()) {
-            log.warn("未能获取到任何Reels数据");
-        } else {
-            log.info("成功获取到 {} 条Reels数据", reelsData.size());
-            for (int i = 0; i < reelsData.size(); i++) {
-                log.info("{}. {}", (i + 1), reelsData.get(i));
-            }
-
-        }
-        closeBrowser();
-        return reelsData;
-
     }
 }
