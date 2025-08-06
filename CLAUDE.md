@@ -21,7 +21,7 @@ mecoo-datahub/
 ├── mecoo-admin-common/         # 通用工具模块
 ├── mecoo-admin-framework/      # 核心框架模块
 ├── mecoo-admin-system/         # 系统管理模块
-├── mecoo-admin-operation/      # 运营功能模块
+├── mecoo-admin-spider/         # 爬虫功能模块
 ├── mecoo-admin-quartz/         # 定时任务模块
 ├── mecoo-admin-generator/      # 代码生成模块
 ├── mecoo-admin-web/           # Web主模块
@@ -55,7 +55,7 @@ mecoo-datahub/
 - 系统配置
 - 操作日志
 
-### 4. mecoo-admin-operation (运营模块)
+### 4. mecoo-admin-spider (爬虫模块)
 - KOL(Key Opinion Leader)内容管理
 - 社交媒体数据抓取
 - 追踪任务管理

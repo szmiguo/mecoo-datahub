@@ -2,7 +2,7 @@ package com.mecoo.web.controller.operation;
 
 import com.mecoo.common.core.controller.BaseController;
 import com.mecoo.common.core.domain.AjaxResult;
-import com.mecoo.operation.service.IKolService;
+import com.mecoo.spider.service.IKolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

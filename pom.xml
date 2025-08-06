@@ -277,10 +277,10 @@
                 <version>${mecoo.datahub.version}</version>
             </dependency>
 
-            <!-- 运营功能模块-->
+            <!-- 爬虫功能模块-->
             <dependency>
                 <groupId>com.mecoo</groupId>
-                <artifactId>mecoo-datahub-operation</artifactId>
+                <artifactId>mecoo-datahub-spider</artifactId>
                 <version>${mecoo.datahub.version}</version>
             </dependency>
 
@@ -298,7 +298,7 @@
         <module>mecoo-datahub-web</module>
         <module>mecoo-datahub-framework</module>
         <module>mecoo-datahub-system</module>
-        <module>mecoo-datahub-operation</module>
+        <module>mecoo-datahub-spider</module>
         <module>mecoo-datahub-quartz</module>
         <module>mecoo-datahub-generator</module>
         <module>mecoo-datahub-common</module>

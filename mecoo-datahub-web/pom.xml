@@ -65,10 +65,10 @@
             <artifactId>mecoo-datahub-generator</artifactId>
         </dependency>
 
-         <!-- KOL-->
+         <!-- 爬虫-->
         <dependency>
             <groupId>com.mecoo</groupId>
-            <artifactId>mecoo-datahub-operation</artifactId>
+            <artifactId>mecoo-datahub-spider</artifactId>
         </dependency>
 
 
