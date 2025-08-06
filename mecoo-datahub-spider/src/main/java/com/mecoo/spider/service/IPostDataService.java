@@ -1,6 +1,8 @@
 package com.mecoo.spider.service;
 
 
+import com.mecoo.spider.domain.PostData;
+
 import java.util.List;
 
 /**
@@ -9,14 +11,8 @@ import java.util.List;
  * @author: lin
  * @date: 2025-06-26 14:55
  */
-public interface IKolPostService {
+public interface IPostDataService {
 
-    String hi();
-
-
-    String createInsReelsSracpeTask(List<String> reelsLinks);
-
-
-
+    int batchInsert(List<PostData> list);
 
 }
