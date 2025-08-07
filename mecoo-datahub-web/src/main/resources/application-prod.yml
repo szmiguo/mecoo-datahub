@@ -52,9 +52,9 @@ spring:
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://10.5.4.4:3306/mecoo-admin?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: mecoo_admin
-        password: vT_,B0aE6AWB@VisfJXq
+        url: jdbc:mysql://hk-cynosdbmysql-grp-3r84hlkv.sql.tencentcdb.com:26220/mecoo-datahub?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: mecoo_datahub
+        password: s]5B2?QNy3s.@gfy}Nh9
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
