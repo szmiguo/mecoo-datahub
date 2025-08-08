@@ -117,3 +117,66 @@ mvn clean package
 - 新增功能时使用代码生成器提高开发效率
 - 注意权限控制和数据权限配置
 - 重要操作需要添加日志记录
+
+## 数据库命名规范
+- 这个项目的名字是 datahub，所以数据库表的前缀是 dh_
+
+## 近期更新记录
+
+### 2025-08-07 功能优化与数据库设计改进
+
+#### 1. 待抓取用户管理功能
+**背景**: 原先Instagram用户名是硬编码在代码中，不便于管理和配置。
+
+**实现内容**:
+- 新建数据库表 `dh_scrape_user` 存储待抓取的用户信息
+- 表结构包含：id、social_media、user_name、start_time、end_time、create_time、update_time
+- 创建完整的MVC架构：
+  - `ScrapeUser` 实体类 (使用MyBatis-Plus注解)
+  - `ScrapeUserMapper` 接口 (使用@Select注解，避免XML转义问题)
+  - `IScrapeUserService` 接口和 `ScrapeUserServiceImpl` 实现类
+- 修改 `ScrapeTask.scrapeSocialMediaPost()` 方法从数据库读取有效用户列表
+- 查询条件：`social_media='instagram'` 且当前时间在 start_time 和 end_time 范围内
+
+**SQL文件**: 
+- `sql/dh_scrape_user.sql` - 创建表结构
+- `sql/insert_new_users.sql` - 插入20个Instagram用户数据
+
+#### 2. 爬虫反检测优化
+**背景**: 连续快速抓取多个用户容易被平台识别为机器人行为。
+
+**实现内容**:
+- 在 `scrapeSocialMediaPost()` 中添加随机延时机制
+- 每个用户抓取完成后等待5-10秒随机时间
+- 异常情况下也会等待，避免连续重试
+- 支持任务优雅中断
+- 详细的日志记录，便于监控抓取进度
+
+#### 3. Instagram爬虫智能优化
+**背景**: 部分用户Reels数量较少，无需继续无效滚动。
+
+**实现内容**:
+- 优化 `InstagramReelScraper.getUserReelsData()` 方法
+- 添加智能提前退出机制：连续3次滚动无新数据时自动停止
+- 适用场景：
+  - 用户无公开Reels（从0开始就无数据）
+  - 用户Reels数量少（中途无更多数据）
+  - 已加载完所有可用内容
+- 提高抓取效率，减少无效操作
+
+#### 4. 数据库架构改进
+**MyBatis-Plus注解方式**:
+- 将XML映射文件改为注解方式，简化配置
+- 避免XML中的转义符问题（`>=` 和 `<=`）
+- 提高代码可维护性
+
+**表设计规范**:
+- 统一使用 `dh_` 表前缀
+- 标准字段：create_time (自动创建时间)、update_time (自动更新时间)
+- 合理的索引设计：复合索引 `idx_social_time (social_media, start_time, end_time)`
+
+#### 5. 技术要点总结
+- **数据持久化**: 完整的MVC架构，支持用户配置化管理
+- **反爬虫策略**: 随机延时、智能检测、人性化行为模拟
+- **性能优化**: 提前退出机制、减少无效滚动操作
+- **代码质量**: 使用注解简化配置、统一异常处理、详细日志记录

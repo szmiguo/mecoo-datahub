@@ -38,7 +38,7 @@ public class ScrapeTask {
         // 从数据库读取有效的Instagram用户列表
         List<ScrapeUser> validUsers = scrapeUserService.getValidUsers("instagram");
         log.info("待抓取的用户列表为 {}",validUsers);
-        int maxCollectedCount = 150;
+        int maxCollectedCount = 300;
 
         if (CollUtil.isEmpty(validUsers)) {
             log.warn("=== 待抓取的 Instagram 用户列表为空");

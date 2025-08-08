@@ -15,18 +15,16 @@ public class ScrapingConfiguration {
     public static final String CHROME_EXECUTABLE_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     
     // 抓取参数
-    public static final int DEFAULT_MAX_COLLECTION_COUNT = 20;
-    public static final int DEFAULT_MAX_SCROLL_ATTEMPTS = 50;
-    //public static final String DEFAULT_USERNAME = "ting.520__";
-    public static final String DEFAULT_USERNAME = "dindaalamanda_";
+    public static final int DEFAULT_MAX_COLLECTION_COUNT = 200;
+    public static final int DEFAULT_MAX_SCROLL_ATTEMPTS = 100;
 
 
     // 时间配置 (毫秒)
     public static final int PAGE_LOAD_TIMEOUT = 3000;
     public static final int VIEWING_DELAY_MIN = 800;
-    public static final int VIEWING_DELAY_RANGE = 1500;
-    public static final int PAUSE_TIME_MIN = 2000;
-    public static final int PAUSE_TIME_RANGE = 3000;
+    public static final int VIEWING_DELAY_RANGE = 1000;
+    public static final int PAUSE_TIME_MIN = 1000;
+    public static final int PAUSE_TIME_RANGE = 2000;
     public static final int NETWORK_IDLE_TIMEOUT = 3000;
     public static final int OBSERVE_DELAY_MIN = 1500;
     public static final int OBSERVE_DELAY_RANGE = 1000;
@@ -76,18 +74,7 @@ public class ScrapingConfiguration {
         }
         return DEFAULT_MAX_COLLECTION_COUNT;
     }
-    
-    /**
-     * 获取目标用户名
-     * 支持通过系统属性自定义
-     */
-    public static String getTargetUsername() {
-        String customUsername = System.getProperty("mecoo.username");
-        if (customUsername != null && !customUsername.trim().isEmpty()) {
-            return validateUsername(customUsername.trim());
-        }
-        return DEFAULT_USERNAME;
-    }
+
     
     /**
      * 获取Chrome可执行文件路径

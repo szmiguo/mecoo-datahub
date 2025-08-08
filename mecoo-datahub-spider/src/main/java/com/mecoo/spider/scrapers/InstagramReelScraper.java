@@ -93,10 +93,12 @@ public class InstagramReelScraper {
             // 滚动触发更多网络请求
             int maxScrolls = ScrapingConfiguration.DEFAULT_MAX_SCROLL_ATTEMPTS;
             int scrollCount = 0;
-            int initialDataCount = reelsData.size();
+            int noNewDataScrolls = 0; // 连续没有新数据的滚动次数
+            int lastDataCount = reelsData.size(); // 上次滚动后的数据量
 
             while (reelsData.size() < maxCollectedCount && scrollCount < maxScrolls) {
                 scrollCount++;
+                int dataCountBeforeScroll = reelsData.size(); // 滚动前的数据量
                 log.info("第 {} 次滚动，已收集: {} 条", scrollCount, reelsData.size());
 
                 // 处理已拦截的响应
@@ -158,9 +160,19 @@ public class InstagramReelScraper {
                     }
                 }
 
-                // 优化：如果前3次滚动都没有收集到任何数据，提前退出
-                if (scrollCount >= 3 && reelsData.size() == initialDataCount) {
-                    log.warn("【优化退出】前 {} 次滚动未收集到任何数据，可能用户不存在或无公开Reels，提前退出", scrollCount);
+                // 检查本次滚动周期是否有新数据（包括滚动前后的完整处理）
+                if (reelsData.size() == dataCountBeforeScroll) {
+                    noNewDataScrolls++;
+                    log.debug("第{}次滚动周期未获得新数据，连续无新数据次数: {}", scrollCount, noNewDataScrolls);
+                } else {
+                    // 有新数据，重置连续无数据计数
+                    noNewDataScrolls = 0;
+                    log.debug("第{}次滚动周期获得新数据，数据量从 {} 增加到 {}", scrollCount, dataCountBeforeScroll, reelsData.size());
+                }
+                
+                // 优化：如果连续3次滚动都没有新数据，提前退出
+                if (noNewDataScrolls >= 3) {
+                    log.warn("【优化退出】连续 {} 次滚动未获得新数据，可能已加载完所有Reels或用户无更多公开内容，提前退出", noNewDataScrolls);
                     break;
                 }
             }
